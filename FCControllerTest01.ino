@@ -50,15 +50,15 @@ void loop() {
     button = 0b10000000;              // Aボタンのみ押された状態
     mask = 0b10000000;
 
-    // P/SがHIGHになるまで待つ
-    while((PINC & LATCH_BIT) != 0);   // while(digitalRead(LATCH_PIN) == HIGH);
-    // P/SがLOWになるまで待つ
-    while((PINC & LATCH_BIT) == 0);   // while(digitalRead(LATCH_PIN) == LOW);
-
     // A 〜 RIGHTまでのボタン分繰り返す
     for(bitcnt = 0; bitcnt < 8; bitcnt++) {
-      // CLKがLOWになるまで待つ
-      while((PINC & P1CLK_BIT) == 0); // while(digitalRead(P1CLK_PIN) == LOW);
+      if(bitcnt == 0) {
+        // P/SがHIGHになるまで待つ
+        while((PINC & LATCH_BIT) != 0);   // while(digitalRead(LATCH_PIN) == HIGH);
+      } else {
+        // CLKがHIGHになるまで待つ
+        while((PINC & P1CLK_BIT) != 0); // while(digitalRead(P1CLK1_PIN) == HIGH);
+      }
 
       //*** ボタンの状態によってDATAを変える
       if(button & mask) {
@@ -71,8 +71,10 @@ void loop() {
       // マスクを右にシフト
       mask >>= 1;
 
-      // CLKがHIGHになるまで待つ
-      while((PINC & P1CLK_BIT) != 0); // while(digitalRead(P1CLK1_PIN) == HIGH);
+      if(bitcnt != 0) {
+        // CLKがLOWになるまで待つ
+        while((PINC & P1CLK_BIT) == 0); // while(digitalRead(P1CLK_PIN) == LOW);
+      }
     }
   }
 }

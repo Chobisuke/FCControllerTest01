@@ -1,0 +1,6 @@
+{
+    "board": "arduino:avr:uno",
+    "port": "/dev/tty.usbmodem12101",
+    "baudRate": 9600,
+    "sketch": "FCControllerTest01.ino"
+}
