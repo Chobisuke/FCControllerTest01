@@ -57,7 +57,7 @@ void loop() {
 
     // A 〜 RIGHTまでのボタン分繰り返す
     for(bitcnt = 0; bitcnt < 8; bitcnt++) {
-      if(bitcnt == 0) {
+      if(bitcnt > 0) {
         // CLKがHIGHになるまで待つ
         while((PINC & P1CLK_BIT) == 0); // while(digitalRead(P1CLK_PIN) != HIGH);
       }
