@@ -36,7 +36,7 @@ void setup() {
 
   //*** ポートを初期化
   // ボタンが離れている(HIGH)
-  PORTC = P1DAT_BIT;
+  PORTC |= P1DAT_BIT;
 }
 
 /* メインループ処理 */
@@ -50,14 +50,16 @@ void loop() {
     button = 0b10000000;              // Aボタンのみ押された状態
     mask = 0b10000000;
 
+    // P/SがLOWになるまで待つ
+    //while((PINC & LATCH_BIT) != 0);   // while(digitalRead(LATCH_PIN) != LOW);
+    // P/SがHIGHになるまで待つ
+    while((PINC & LATCH_BIT) == 0);   // while(digitalRead(LATCH_PIN) != HIGH);
+
     // A 〜 RIGHTまでのボタン分繰り返す
     for(bitcnt = 0; bitcnt < 8; bitcnt++) {
       if(bitcnt == 0) {
-        // P/SがHIGHになるまで待つ
-        while((PINC & LATCH_BIT) != 0);   // while(digitalRead(LATCH_PIN) == HIGH);
-      } else {
         // CLKがHIGHになるまで待つ
-        while((PINC & P1CLK_BIT) != 0); // while(digitalRead(P1CLK1_PIN) == HIGH);
+        while((PINC & P1CLK_BIT) == 0); // while(digitalRead(P1CLK_PIN) != HIGH);
       }
 
       //*** ボタンの状態によってDATAを変える
@@ -71,10 +73,8 @@ void loop() {
       // マスクを右にシフト
       mask >>= 1;
 
-      if(bitcnt != 0) {
-        // CLKがLOWになるまで待つ
-        while((PINC & P1CLK_BIT) == 0); // while(digitalRead(P1CLK_PIN) == LOW);
-      }
+      // CLKがLOWになるまで待つ
+      while((PINC & P1CLK_BIT) != 0); // while(digitalRead(P1CLK1_PIN) != LOW);
     }
   }
 }
